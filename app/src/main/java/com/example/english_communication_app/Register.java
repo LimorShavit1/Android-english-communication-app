@@ -16,10 +16,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class Register extends AppCompatActivity implements View.OnClickListener{
 
-    EditText etFullNameR, etEmailR, etPasswordR;
+    EditText etFullNameR, etEmailR, etPasswordR,etCountry,etPhone;
     Button btnSubmitRegister, btnToLogin;
     FirebaseAuth fAuth;
 
@@ -32,6 +36,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         etFullNameR = findViewById(R.id.etFullNameInput);
         etEmailR = findViewById(R.id.etEmailInput);
         etPasswordR = findViewById(R.id.etPasswordInput);
+        etCountry = findViewById(R.id.etCountry);
+        etPhone = findViewById(R.id.etPhone);
 
         fAuth = FirebaseAuth.getInstance();
 
@@ -44,19 +50,22 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        String fullName, email, password ;
+        String name, email, password,country,level,phone ;
         if (v == btnToLogin) {
             Intent i = new Intent(getApplicationContext(), Login.class);
             startActivity(i);
         }
         if (v == btnSubmitRegister) {
             //extract user input
-            fullName = etFullNameR.getText().toString();
+            name = etFullNameR.getText().toString();
             email = etEmailR.getText().toString();
             password = etPasswordR.getText().toString();
+            country = etCountry.getText().toString() ;
+           // level = ;
+            phone = etPhone.getText().toString();
 
             //validate user input
-            if(fullName.isEmpty()){
+            if(name.isEmpty()){
                 etFullNameR.setError("Full Name is Required");
                 return;
             }
@@ -68,6 +77,14 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                 etPasswordR.setError("Password is Required");
                 return;
             }
+            if(country.isEmpty()){
+                etPasswordR.setError("Country is Required");
+                return;
+            }
+            if(phone.isEmpty()){
+                etPasswordR.setError("Phone Number is Required");
+                return;
+            }
 
             fAuth.createUserWithEmailAndPassword(email,password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -76,6 +93,23 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                             if (task.isSuccessful()) {
                                 // Sign in success, send user to the next page
                                 FirebaseUser user = fAuth.getCurrentUser();
+                                String uid = user.getUid();
+                                HashMap<Object, String> hashMap = new HashMap<>();
+                                hashMap.put("uid",uid);
+                                hashMap.put("name",name);
+                                hashMap.put("email",email);
+                                hashMap.put("phone",phone);
+                                hashMap.put("country",country);
+                                hashMap.put("password",password);
+                                hashMap.put("level","");
+                                //firebase database instance
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                //path to store user data named "Users"
+                                DatabaseReference reference = database.getReference("Users");
+                                //put data within hashmap in database
+                                reference.child(uid).setValue(hashMap);
+
+
                                 startActivity(new Intent(getApplicationContext(),MainApp.class));
                                 finish();
                             } else {

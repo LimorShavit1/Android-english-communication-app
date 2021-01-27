@@ -15,6 +15,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class Login extends AppCompatActivity implements View.OnClickListener{
  Button btnToRegister, btnLogin;
@@ -65,6 +69,25 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     if (task.isSuccessful()) {
                         // Login success, send user to the Main activity
                         FirebaseUser user = firebaseAuth.getCurrentUser();
+                        String uid = user.getUid();
+                        String email = userEmail.getText().toString();
+                        String password = userPassword.getText().toString();
+                        HashMap<Object, String> hashMap = new HashMap<>();
+                        hashMap.put("uid",uid);
+                        hashMap.put("name","");
+                        hashMap.put("email",email);
+                        hashMap.put("phone","");
+                        hashMap.put("country","");
+                        hashMap.put("password",password);
+                        hashMap.put("level","");
+                        //firebase database instance
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        //path to store user data named "Users"
+                        DatabaseReference reference = database.getReference("Users");
+                        //put data within hashmap in database
+                        reference.child(uid).setValue(hashMap);
+
+
                         startActivity(new Intent(getApplicationContext(),MainApp.class));
                         finish();
                     } else {
