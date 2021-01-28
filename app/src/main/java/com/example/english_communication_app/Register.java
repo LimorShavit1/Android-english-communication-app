@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
+
 public class Register extends AppCompatActivity implements View.OnClickListener{
 
     EditText etFullNameR, etEmailR, etPasswordR,etCountry,etPhone;
@@ -75,13 +76,19 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
             phone = etPhone.getText().toString();
             //Toast.makeText(Register.this,selectedRBlevel.getText().toString(),Toast.LENGTH_SHORT).show();
 
-            //validate user input
-            if(etFullNameR.getText().length()==0){
-                etFullNameR.setError("Full Name is Required");
+
+            if(name.isEmpty() && email.isEmpty() && password.isEmpty() && country.isEmpty() && phone.isEmpty()){
+                Toast.makeText(Register.this, "Please complete all required data", Toast.LENGTH_LONG).show();
                 return;
             }
-            if(email.isEmpty()){
-                etEmailR.setError("Email is Required");
+
+            //validate user input
+            if(name.isEmpty() || !InputValidation.isNameValid(name)){
+                etFullNameR.setError("Valid Full Name Is Required");
+                return;
+            }
+            if(email.isEmpty() || !InputValidation.isEmailValid(email)){
+                etEmailR.setError("Valid Email Is Required");
                 return;
             }
             if(password.isEmpty()){
@@ -89,13 +96,18 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                 return;
             }
             if(country.isEmpty()){
-                etPasswordR.setError("Country is Required");
+                etCountry.setError("Country is Required");
                 return;
             }
-            if(phone.isEmpty()){
-                etPasswordR.setError("Phone Number is Required");
+            if(phone.isEmpty() || !InputValidation.isPhoneValid(phone)){
+                etPhone.setError("Valid Phone Number Is Required");
                 return;
             }
+//            if(level.isEmpty()){
+//                selectedRBlevel.setError("Phone Number is Required");
+//                Toast.makeText(Register.this, "Please complete all required data", Toast.LENGTH_LONG).show();
+//                return;
+//            }
 
             fAuth.createUserWithEmailAndPassword(email,password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
