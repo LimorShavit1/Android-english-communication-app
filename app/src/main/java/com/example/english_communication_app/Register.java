@@ -76,7 +76,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
             //Toast.makeText(Register.this,selectedRBlevel.getText().toString(),Toast.LENGTH_SHORT).show();
 
             //validate user input
-            if(name.isEmpty()){
+            if(etFullNameR.getText().length()==0){
                 etFullNameR.setError("Full Name is Required");
                 return;
             }
