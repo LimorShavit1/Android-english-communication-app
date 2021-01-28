@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +27,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
     EditText etFullNameR, etEmailR, etPasswordR,etCountry,etPhone;
     Button btnSubmitRegister, btnToLogin;
+    RadioGroup radioGroup;
+    RadioButton selectedRBlevel;
     FirebaseAuth fAuth;
 
 
@@ -46,6 +50,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
         btnToLogin = findViewById(R.id.btnToLogin);
         btnToLogin.setOnClickListener(this);
+
+        radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
+        //radioGroup.clearCheck();
+
     }
 
     @Override
@@ -56,13 +64,16 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
             startActivity(i);
         }
         if (v == btnSubmitRegister) {
-            //extract user input
+            //extract user input from register form
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            selectedRBlevel = findViewById(selectedId);
             name = etFullNameR.getText().toString();
             email = etEmailR.getText().toString();
             password = etPasswordR.getText().toString();
             country = etCountry.getText().toString() ;
-           // level = ;
+            level = selectedRBlevel.getText().toString();
             phone = etPhone.getText().toString();
+            //Toast.makeText(Register.this,selectedRBlevel.getText().toString(),Toast.LENGTH_SHORT).show();
 
             //validate user input
             if(name.isEmpty()){
@@ -101,7 +112,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                                 hashMap.put("phone",phone);
                                 hashMap.put("country",country);
                                 hashMap.put("password",password);
-                                hashMap.put("level","");
+                                hashMap.put("level",level);
                                 //firebase database instance
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 //path to store user data named "Users"

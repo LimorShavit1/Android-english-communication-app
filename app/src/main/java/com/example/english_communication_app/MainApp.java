@@ -10,7 +10,7 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainApp extends AppCompatActivity implements View.OnClickListener{
-    Button logOut;
+    Button logOut, btnEditprofile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +21,10 @@ public class MainApp extends AppCompatActivity implements View.OnClickListener{
         logOut = findViewById(R.id.btnLogout);
         logOut.setOnClickListener(this);
 
+        //Navigate to "Edit Profile" activity
+        btnEditprofile = findViewById(R.id.btnEditprofile);
+        btnEditprofile.setOnClickListener(this);
+
 
     }
 
@@ -29,6 +33,10 @@ public class MainApp extends AppCompatActivity implements View.OnClickListener{
         if(v == logOut){
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(),Login.class));
+            finish();
+        }
+        if(v == btnEditprofile){
+            startActivity(new Intent(getApplicationContext(),EditProfile.class));
             finish();
         }
     }
